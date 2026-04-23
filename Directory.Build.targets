@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup>
+    <ProjectLayer Condition="$(MSBuildProjectFullPath.Contains('Domain'))">Domain</ProjectLayer>
+    <ProjectLayer Condition="$(MSBuildProjectFullPath.Contains('Application'))">Application</ProjectLayer>
+    <ProjectLayer Condition="$(MSBuildProjectFullPath.Contains('Infrastructure'))">Infrastructure</ProjectLayer>
+    <ProjectLayer Condition="$(MSBuildProjectFullPath.Contains('Persistence'))">Persistence</ProjectLayer>
+    <ProjectLayer Condition="$(MSBuildProjectFullPath.Contains('Presentation')) Or $(MSBuildProjectFullPath.Contains('WebApi'))">Presentation</ProjectLayer>
+  </PropertyGroup>
+
+  <Target Name="ValidateCleanArchitectureDependencies" BeforeTargets="Build">
+    <Error
+      Condition="'$(ProjectLayer)' == 'Domain' And $([System.String]::new('%(Reference.Identity)').Contains('Application'))"
+      Text="Clean Architecture Violation: Domain layer cannot depend on Application layer" />
+    <Error
+      Condition="'$(ProjectLayer)' == 'Domain' And $([System.String]::new('%(Reference.Identity)').Contains('Infrastructure'))"
+      Text="Clean Architecture Violation: Domain layer cannot depend on Infrastructure layer" />
+    <Error
+      Condition="'$(ProjectLayer)' == 'Domain' And $([System.String]::new('%(Reference.Identity)').Contains('Persistence'))"
+      Text="Clean Architecture Violation: Domain layer cannot depend on Persistence layer" />
+    <Error
+      Condition="'$(ProjectLayer)' == 'Domain' And $([System.String]::new('%(Reference.Identity)').Contains('Presentation'))"
+      Text="Clean Architecture Violation: Domain layer cannot depend on Presentation layer" />
+
+    <Error
+      Condition="'$(ProjectLayer)' == 'Application' And $([System.String]::new('%(Reference.Identity)').Contains('Infrastructure'))"
+      Text="Clean Architecture Violation: Application layer cannot depend on Infrastructure layer" />
+    <Error
+      Condition="'$(ProjectLayer)' == 'Application' And $([System.String]::new('%(Reference.Identity)').Contains('Persistence'))"
+      Text="Clean Architecture Violation: Application layer cannot depend on Persistence layer" />
+    <Error
+      Condition="'$(ProjectLayer)' == 'Application' And $([System.String]::new('%(Reference.Identity)').Contains('Presentation'))"
+      Text="Clean Architecture Violation: Application layer cannot depend on Presentation layer" />
+  </Target>
+</Project>

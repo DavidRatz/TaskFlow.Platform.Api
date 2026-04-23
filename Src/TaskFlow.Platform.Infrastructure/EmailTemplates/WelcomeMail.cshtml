@@ -1,0 +1,61 @@
+@model TaskFlow.Platform.Domain.Emails.Models.WelcomeMail
+
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; margin:0 auto; font-family:'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    <tr>
+        <td align="center" style="padding:40px 20px;">
+            <!-- Logo -->
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td style="text-align:center;">
+                        <span style="font-size:32px; font-weight:700; color:#1f2937;">CarWash</span>
+                        <span style="display:inline-block; background-color:#3b82f6; color:#ffffff; font-size:32px; font-weight:700; padding:4px 12px; border-radius:8px; margin-left:4px;">Flow</span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:0 20px;">
+            <!-- Card container -->
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:16px; overflow:hidden;">
+                <tr>
+                    <td style="padding:32px;">
+                        <h1 style="margin:0 0 24px 0; font-size:24px; font-weight:600; color:#1f2937; text-align:center;">Bienvenue sur CarWashFlow !</h1>
+
+                        <p style="margin:0 0 16px 0; font-size:16px; line-height:1.6; color:#4b5563;">Bonjour @Model.FirstName,</p>
+
+                        <p style="margin:0 0 24px 0; font-size:16px; line-height:1.6; color:#4b5563;">Votre compte a été créé avec succès. Nous sommes ravis de vous accueillir sur notre plateforme de lavage automobile.</p>
+
+                        <!-- Info box -->
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px 0; background-color:#f3f4f6; border-radius:12px;">
+                            <tr>
+                                <td style="padding:20px;">
+                                    <p style="margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151;">Vos informations</p>
+                                    <p style="margin:0 0 4px 0; font-size:14px; color:#6b7280;">Email : @Model.Email</p>
+                                    <p style="margin:0; font-size:14px; color:#6b7280;">Nom : @Model.FirstName @Model.LastName</p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- CTA Button -->
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px 0;">
+                            <tr>
+                                <td align="center">
+                                    <a href="#" style="display:inline-block; background-color:#3b82f6; color:#ffffff; font-size:16px; font-weight:600; text-decoration:none; padding:14px 32px; border-radius:50px;">Se Connecter</a>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin:0; font-size:14px; line-height:1.6; color:#6b7280; text-align:center;">Vous pouvez dès maintenant accéder à votre espace client et profiter de nos services.</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:24px 20px; text-align:center;">
+            <p style="margin:0 0 4px 0; font-size:12px; color:#9ca3af;">Ce message est automatique, merci de ne pas répondre à cet e-mail.</p>
+            <p style="margin:0; font-size:12px; color:#9ca3af;">© 2026 CarWashFlow. Tous droits réservés.</p>
+        </td>
+    </tr>
+</table>

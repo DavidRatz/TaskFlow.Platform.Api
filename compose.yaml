@@ -1,0 +1,76 @@
+services:
+  taskflow-db:
+    container_name: taskflow-db
+    image: postgres:16
+    restart: always
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-taskflow}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-taskflow}",
+        ]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - taskflow_pgdata:/var/lib/postgresql/data
+    networks:
+      - taskflow-network
+        
+  taskflow-rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    restart: always
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 5s
+      timeout: 15s
+      retries: 5
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - taskflow-network
+
+  taskflow-api:
+    container_name: taskflow-api
+    restart: always
+    build:
+      context: .
+      dockerfile: Taskflow.Platform.Api/Dockerfile
+    ports:
+      - "${ASPNETCORE_HTTP_PORT:-8081}:8080"
+    depends_on:
+      taskflow-db:
+        condition: service_healthy
+    networks:
+      - taskflow-network
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ConnectionStrings__DefaultConnection: "Host=taskflow-db;Port=5432;Database=${POSTGRES_DB:-taskflow};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - taskflow-network
+volumes:
+  taskflow_pgdata:
+  rabbitmq_data:
+
+networks:
+  taskflow-network:
+    driver: bridge

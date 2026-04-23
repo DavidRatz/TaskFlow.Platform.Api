@@ -1,0 +1,12 @@
+namespace TaskFlow.Platform.Persistence.Seeding.Options;
+
+public sealed class AdminSeedOptions
+{
+    public const string SectionName = "AdminSeed";
+
+    public bool Enabled { get; init; }
+
+    public string Email { get; init; } = "admin@carwashflow.com";
+
+    public string Password { get; init; } = string.Empty;
+}

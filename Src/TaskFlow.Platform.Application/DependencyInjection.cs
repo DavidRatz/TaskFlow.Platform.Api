@@ -1,0 +1,15 @@
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace TaskFlow.Platform.Application;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMediatR(AssemblyReference.Assembly);
+
+        return services;
+    }
+}

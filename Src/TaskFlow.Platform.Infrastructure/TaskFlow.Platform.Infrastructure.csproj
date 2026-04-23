@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <RazorCompileOnPublish>true</RazorCompileOnPublish>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="EmailTemplates\**\*.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.19.0" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.73.0.4029" />
+    <PackageReference Include="MailKit" Version="4.15.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Graph" Version="5.103.0" />
+    <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.7" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.83.1" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.16.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.16.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0-preview.2.26159.112" />
+    <PackageReference Include="Stripe.net" Version="47.4.0" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
+    <PackageReference Include="Rebus" Version="8.9.0"/>
+    <PackageReference Include="Rebus.RabbitMq" Version="10.1.1"/>
+    <PackageReference Include="Rebus.PostgreSql" Version="9.1.1"/>
+    <PackageReference Include="Rebus.ServiceProvider" Version="10.7.2"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskFlow.Platform.Domain\TaskFlow.Platform.Domain.csproj"/>
+    <ProjectReference Include="..\TaskFlow.Platform.Application\TaskFlow.Platform.Application.csproj"/>
+    <ProjectReference Include="..\TaskFlow.Platform.Persistence\TaskFlow.Platform.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="EmailTemplates\Components\Logo.cshtml" />
+    <UpToDateCheckInput Remove="EmailTemplates\Components\TemplateEmail.cshtml" />
+  </ItemGroup>
+
+</Project>

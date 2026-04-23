@@ -1,0 +1,102 @@
+services:
+  carwashflow-db:
+    container_name: carwashflow-db
+    image: postgres:16
+    restart: always
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
+        ]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - carwashflow_pgdata:/var/lib/postgresql/data
+    networks:
+      - carwashflow-network
+        
+  carwashflow-rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    restart: always
+    ports:
+      - "${RABBITMQ_PORT}:5672"  # AMQP protocol port
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"  # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 5s
+      timeout: 15s
+      retries: 5
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - carwashflow-network
+
+  carwashflow-api:
+    container_name: carwashflow-api
+    restart: always
+    build:
+      context: .
+      dockerfile: CarWashFlow.Platform.Api/Dockerfile
+    ports:
+      - "${ASPNETCORE_HTTP_PORT}:8080"
+    depends_on:
+      carwashflow-db:
+        condition: service_healthy
+    networks:
+      - carwashflow-network
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${CONNECTIONSTRINGS_DEFAULTCONNECTION}
+      SeedDatabase: ${SEED_DATABASE}
+      AllowedHosts: ${ALLOWED_HOSTS}
+
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__Secret: ${JWT_SECRET}
+      Jwt__ExpiresInDays: ${JWT_EXPIRES_IN_DAYS}
+
+      Stripe__SecretKey: ${STRIPE_SECRET_KEY}
+      Stripe__ApiVersion: ${STRIPE_API_VERSION}
+      Stripe__WebhookSecret: ${STRIPE_WEBHOOK_SECRET}
+
+      RabbitMQ__Host: ${RABBITMQ_HOST}
+      RabbitMQ__Username: ${RABBITMQ_USERNAME}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      RabbitMQ__QueueName: ${RABBITMQ_QUEUE_NAME}
+      RabbitMQ__NumberOfWorkers: ${RABBITMQ_NUMBER_OF_WORKERS}
+      RabbitMQ__MaxParallelism: ${RABBITMQ_MAX_PARALLELISM}
+
+      MailServer__Host: ${MAILSERVER_HOST}
+      MailServer__Port: ${MAILSERVER_PORT}
+      MailServer__UseSsl: ${MAILSERVER_USESSL}
+      MailServer__Username: ${MAILSERVER_USERNAME}
+      MailServer__Password: ${MAILSERVER_PASSWORD}
+      Email__FromAddress: ${EMAIL_FROM_ADDRESS}
+
+      Logging__LogLevel__Default: ${LOGLEVEL_DEFAULT}
+      Logging__LogLevel__Microsoft_AspNetCore: ${LOGLEVEL_MICROSOFT_ASPNETCORE}
+
+      SubscriptionPlans__Comfort__0: ${SUBSCRIPTION_PLANS_COMFORT_0}
+      SubscriptionPlans__ComfortFlex__0: ${SUBSCRIPTION_PLANS_COMFORTFLEX_0}
+      SubscriptionPlans__Family__0: ${SUBSCRIPTION_PLANS_FAMILY_0}
+      SubscriptionPlans__FamilyFlex__0: ${SUBSCRIPTION_PLANS_FAMILYFLEX_0}
+      SubscriptionPlans__Pro__0: ${SUBSCRIPTION_PLANS_PRO_0}
+volumes:
+  carwashflow_pgdata:
+  rabbitmq_data:
+
+networks:
+  carwashflow-network:
+    driver: bridge

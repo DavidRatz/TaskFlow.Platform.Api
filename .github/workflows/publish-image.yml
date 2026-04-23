@@ -1,0 +1,67 @@
+name: Publish Image
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Publish to GitHub Packages
+    runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: car-wash-flow-platform-api
+
+    steps:
+      - name: Prepare build variables
+        id: prep
+        run: |
+          EVENT_NAME="${{ github.event_name }}"
+
+          if [ "$EVENT_NAME" = "release" ]; then
+            CHECKOUT_REF="${{ github.event.release.tag_name }}"
+            IMAGE_TAG="$CHECKOUT_REF"
+          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            CHECKOUT_REF="${GITHUB_REF_NAME}"
+            IMAGE_TAG="$CHECKOUT_REF"
+          else
+            echo "Unsupported event: $EVENT_NAME" >&2
+            exit 1
+          fi
+
+          if [ -z "$CHECKOUT_REF" ]; then
+            echo "Unable to determine the source ref to check out." >&2
+            exit 1
+          fi
+
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          SANITIZED_TAG=$(echo "$IMAGE_TAG" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g')
+
+          echo "CHECKOUT_REF=$CHECKOUT_REF" >> "$GITHUB_ENV"
+          echo "TAG=$SANITIZED_TAG" >> "$GITHUB_ENV"
+          echo "IMAGE_URI=${REGISTRY}/${OWNER_LOWER}/${IMAGE_NAME}" >> "$GITHUB_ENV"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CHECKOUT_REF }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          echo "Building Docker image: ${IMAGE_URI}:${TAG}"
+          docker build -t ${IMAGE_URI}:${TAG} -f ./CarWashFlow.Platform.Api/Dockerfile .
+
+      - name: Push Docker image
+        run: |
+          docker push ${IMAGE_URI}:${TAG}

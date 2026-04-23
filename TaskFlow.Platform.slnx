@@ -1,0 +1,21 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Docker/">
+    <File Path="compose.yaml" />
+    <File Path="stack.compose.yaml" />
+  </Folder>
+  <Folder Name="/Src/">
+    <Project Path="Src/TaskFlow.Platform.Application/TaskFlow.Platform.Application.csproj" />
+    <Project Path="Src/TaskFlow.Platform.Domain/TaskFlow.Platform.Domain.csproj" />
+    <Project Path="Src/TaskFlow.Platform.Infrastructure/TaskFlow.Platform.Infrastructure.csproj" />
+    <Project Path="Src/TaskFlow.Platform.Persistence/TaskFlow.Platform.Persistence.csproj" />
+    <Project Path="Src/TaskFlow.Platform.Presentation/TaskFlow.Platform.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+  </Folder>
+  <Project Path="TaskFlow.Platform.Api/TaskFlow.Platform.Api.csproj" />
+</Solution>

@@ -1,0 +1,11 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+.idea/
+*.DotSettings.user
+
+# Secrets — use dotnet user-secrets or environment variables
+appsettings.Production.json
+appsettings.Staging.json

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.102" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Emails\" />
+    <Folder Include="Tasks\" />
+  </ItemGroup>
+
+</Project>
