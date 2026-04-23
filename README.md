@@ -1,6 +1,6 @@
 # TaskFlow Platform
 
-Backend API de la plateforme TaskFlow — gestion d'abonnements de lavage auto, stations, flottes et paiements Stripe.
+Backend API de la plateforme TaskFlow — Tableau de bord de gestion de plusieurs boites mails : afficher, créer une tâche à partir d'un mail, d'une note, d'un rappel dans un calendrier
 
 ## Stack technique
 
